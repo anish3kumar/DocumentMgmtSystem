@@ -1,4 +1,4 @@
-package com.documentmgmtsystem.converter;
+package com.documentmgmtsystem.util;
 
 import org.springframework.stereotype.Component;
 

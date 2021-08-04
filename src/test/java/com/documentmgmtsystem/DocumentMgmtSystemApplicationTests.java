@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +46,7 @@ class DocumentMgmtSystemApplicationTests {
     {
         when(documentDao.findAll()).thenReturn(Stream.of(new Document(1l,"test","pdf",22,new Date(),"test/path"),
                 new Document(2l,"test2","img",33,new Date(),"test2/path")).collect(Collectors.toList()));
-        assertEquals(2,documentService.getAllDocuments().size());
+        assertEquals(2,documentService.getAllDocuments(Pageable.ofSize(1)));
     }
     @Test
     public void getDocumentById()

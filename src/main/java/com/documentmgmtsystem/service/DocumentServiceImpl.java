@@ -2,8 +2,12 @@ package com.documentmgmtsystem.service;
 
 import com.documentmgmtsystem.dao.DocumentDao;
 import com.documentmgmtsystem.entity.Document;
+import com.documentmgmtsystem.exception.DocumentNotFoundException;
 import com.documentmgmtsystem.uploadhelper.DocumentUploadHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,15 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DocumentServiceImpl implements DocumentService{
 
     @Autowired
-    public DocumentDao documentDao;
+    private DocumentDao documentDao;
 
     @Autowired
-    public DocumentUploadHelper documentUploadHelper;
+    private DocumentUploadHelper documentUploadHelper;
+
+    @Autowired
+    private Environment environment;
 
     @Override
     public Document addDocumentDetails(MultipartFile file, Long docId) {
@@ -36,13 +44,24 @@ public class DocumentServiceImpl implements DocumentService{
     }
 
     @Override
-    public List<Document> getAllDocuments() {
-
-        return documentDao.findAll();
+    public Page<Document> getAllDocuments(Pageable pageable) throws DocumentNotFoundException {
+        Optional<Page<Document>> document = Optional.ofNullable(documentDao.finaAll(pageable));
+        if(!document.isPresent())
+        {
+            throw new DocumentNotFoundException("list is empty");
+        }
+        return documentDao.findAll(pageable);
     }
 
+
     @Override
-    public Document getDocumentById(Long docID) {
-        return documentDao.findByDocId(docID);
+    public Document getDocumentById(Long docID) throws DocumentNotFoundException {
+       Optional<Document> document  = Optional.ofNullable(documentDao.findByDocId(docID));
+       if(!document.isPresent())
+       {
+           throw new DocumentNotFoundException("Document is not present");
+       }
+
+       return documentDao.findByDocId(docID);
     }
 }

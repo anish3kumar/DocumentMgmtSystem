@@ -1,4 +1,4 @@
-package com.documentmgmtsystem.converter;
+package com.documentmgmtsystem.util;
 
 import com.documentmgmtsystem.dto.DocumentDto;
 import com.documentmgmtsystem.entity.Document;

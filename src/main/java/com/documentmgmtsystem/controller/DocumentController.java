@@ -4,46 +4,39 @@ import com.documentmgmtsystem.entity.Document;
 import com.documentmgmtsystem.exception.DocumentNotFoundException;
 import com.documentmgmtsystem.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
 public class DocumentController {
 
     @Autowired
-    public DocumentService documentService;
+    private DocumentService documentService;
+
     @PostMapping("/document/add")
-    public Document addDocument(@RequestParam("file")MultipartFile file,@RequestParam Long docId)
+    public Document addDocument(@RequestParam("file")MultipartFile file,@RequestParam Long docId)//request body document name caller service
+             //type sub type
     {
         return documentService.addDocumentDetails(file,docId);
     }
 
     @GetMapping("/document/allDocuments")
-    public ResponseEntity<List<Document>> getAllDocuments()
+    public Page<Document> getAllDocuments(Pageable page) throws  DocumentNotFoundException
     {
-       List<Document> list =documentService.getAllDocuments();
-        if(list.size() <=0)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(list);
+        return documentService.getAllDocuments(page);
     }
 
     @GetMapping("/document/{docId}")
-    public ResponseEntity<Document> searchDocumentById(@PathVariable("docId") Long docId) throws DocumentNotFoundException
+    public Document searchDocumentById(@PathVariable("docId") Long docId) throws DocumentNotFoundException
     {
-        Document document = documentService.getDocumentById(docId);
-        if(document == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(document));
+        return documentService.getDocumentById(docId);
     }
 
 }

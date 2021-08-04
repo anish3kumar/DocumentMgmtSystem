@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DocumentDao extends JpaRepository<Document,Long>, PagingAndSortingRepository<Document,Long> {
-    Page<Document> finaAll(Pageable pageable);
+    Page<Document> findAll(Pageable pageable);
     public Document findByDocName(String docName);
     public Document findByDocId(Long docId);
 }

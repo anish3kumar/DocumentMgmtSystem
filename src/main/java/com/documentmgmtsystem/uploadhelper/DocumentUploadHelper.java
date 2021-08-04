@@ -10,8 +10,8 @@ import java.nio.file.StandardCopyOption;
 
 @Component
 public class DocumentUploadHelper {
-    public final String uploadDir ="/home/anishkumar/DocumentMgmntSystem/src/main/resources/static/documents";
-    public boolean uploadDoc(MultipartFile file)
+    public final String uploadDir ="/home/anishkumar/DocumentMgmtSystem/src/main/resources/static/documents";
+    public boolean uploadDocument(MultipartFile file)
     {
         boolean checkUpload = false;
         try

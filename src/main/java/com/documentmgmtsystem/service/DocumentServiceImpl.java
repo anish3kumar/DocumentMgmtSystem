@@ -23,10 +23,8 @@ public class DocumentServiceImpl implements DocumentService{
 
     @Autowired
     private DocumentDao documentDao;
-
     @Autowired
     private DocumentUploadHelper documentUploadHelper;
-
     @Autowired
     private Environment environment;
 
@@ -38,14 +36,22 @@ public class DocumentServiceImpl implements DocumentService{
         document.setDocType(file.getContentType());
         document.setDocSize(file.getSize());
         document.setCreatedAt(new Date());
-        document.setDocPath(ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/documents");
-        boolean checkUpload = documentUploadHelper.uploadDoc(file) ;
+        document.setDocPath(environment.getProperty("document.upload.path")+file.getOriginalFilename());
+        boolean checkUpload = documentUploadHelper.uploadDocument(file) ;
+        if(checkUpload)
+        {
+            System.out.println("document uploaded");
+        }
+        else
+        {
+            System.out.println("some error occured while uploading");
+        }
         return documentDao.save(document);
     }
 
     @Override
     public Page<Document> getAllDocuments(Pageable pageable) throws DocumentNotFoundException {
-        Optional<Page<Document>> document = Optional.ofNullable(documentDao.finaAll(pageable));
+        Optional<Page<Document>> document = Optional.ofNullable(documentDao.findAll(pageable));
         if(!document.isPresent())
         {
             throw new DocumentNotFoundException("list is empty");

@@ -2,6 +2,7 @@ package com.documentmgmtsystem;
 
 import com.documentmgmtsystem.dao.DocumentDao;
 import com.documentmgmtsystem.entity.Document;
+import com.documentmgmtsystem.exception.DocumentNotFoundException;
 import com.documentmgmtsystem.service.DocumentService;
 import com.documentmgmtsystem.uploadhelper.DocumentUploadHelper;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,7 @@ class DocumentMgmtSystemApplicationTests {
     @MockBean
     private DocumentUploadHelper documentUploadHelper;
     @Test
-    public void getAllDocuments()
-    {
+    public void getAllDocuments() throws DocumentNotFoundException {
         when(documentDao.findAll()).thenReturn(Stream.of(new Document(1l,"test","pdf",22,new Date(),"test/path"),
                 new Document(2l,"test2","img",33,new Date(),"test2/path")).collect(Collectors.toList()));
         assertEquals(2,documentService.getAllDocuments(Pageable.ofSize(1)));
@@ -67,7 +67,7 @@ class DocumentMgmtSystemApplicationTests {
     public void addDocumentDetails() throws IOException {
         Long docId = 2l;
         MultipartFile multipartFile = new MockMultipartFile("test.txt",new FileInputStream(new File("/home/anishkumar/test.txt")));
-        documentUploadHelper.uploadDoc(multipartFile);
+        documentUploadHelper.uploadDocument(multipartFile);
         Document document = new Document(2l,"test2","img",33,new Date(),"test2/path");
         documentDao.save(document);
         //when(documentDao.save(document)).thenReturn(document);
